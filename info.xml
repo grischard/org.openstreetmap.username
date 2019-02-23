@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<extension key="org.openstreetmap.username" type="module">
+  <file>username</file>
+  <name>OSM username validation</name>
+  <description>Checks whether custom fields labeled 'OSM username' contain a valid openstreetmap.org user</description>
+  <license>AGPL-3.0</license>
+  <maintainer>
+    <author>Guillaume Rischard</author>
+    <email>openstreetmap@stereo.lu</email>
+  </maintainer>
+  <urls>
+    <url desc="Main Extension Page">https://github.com/grischard/org.openstreetmap.username</url>
+    <url desc="Documentation">https://github.com/grischard/org.openstreetmap.username/blob/master/README.md</url>
+    <url desc="Support">https://github.com/grischard/org.openstreetmap.username/issues</url>
+    <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
+  </urls>
+  <releaseDate>2019-02-23</releaseDate>
+  <version>1.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>5.0</ver>
+  </compatibility>
+  <comments>This is a new module that has been developed for join.openstreetmap.org and not tested anywhere else.</comments>
+  <civix>
+    <namespace>CRM/Username</namespace>
+  </civix>
+</extension>
