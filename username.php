@@ -153,7 +153,7 @@ function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
        
        $osm = CRM_Utils_Array::value( $osmfieldid, $fields );
        if (strlen((string)$osm) > 0) {
-           $url = 'https://api.openstreetmap.org/api/0.6/changesets?time=9999-01-01&display_name='.urlencode($osm);
+           $url = 'https://api.openstreetmap.org/api/0.6/changesets?time=9999-01-01&display_name='.rawurlencode($osm);
            $handle = curl_init($url);
            curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
 
