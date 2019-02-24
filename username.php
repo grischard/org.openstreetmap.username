@@ -143,7 +143,7 @@ function username_civicrm_entityTypes(&$entityTypes) {
 function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
     if ( $formName == 'CRM_Contact_Form_Contact' or
          $formName == 'CRM_Contact_Form_Inline_CustomData' or
-         $formName == 'CRM_Contact_Form_Inline_CustomData'
+         $formName == 'CRM_Contribute_Form_Contribution_Main'
         ) {
        $osmfield = civicrm_api3('CustomField', 'getsingle', array('label' => 'OSM username'));
        if(! $osmfield){
