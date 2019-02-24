@@ -141,8 +141,10 @@ function username_civicrm_entityTypes(&$entityTypes) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_validateForm/
  */
 function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
-    if ( $formName == 'CRM_Contact_Form_Contact' or  $formName ==
-                 'CRM_Contact_Form_Inline_CustomData') {
+    if ( $formName == 'CRM_Contact_Form_Contact' or
+         $formName == 'CRM_Contact_Form_Inline_CustomData' or
+         $formName == 'CRM_Contact_Form_Inline_CustomData'
+        ) {
        $osmfield = civicrm_api3('CustomField', 'getsingle', array('label' => 'OSM username'));
        if(! $osmfield){
            throw new InvalidArgumentException(sprintf("Could not find custom field with 'OSM username' as its label"));
