@@ -164,9 +164,6 @@ function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
                $errors[$osmfieldid] = ts( 'OSM username does not exist. Remember that usernames are case sensitive.' );
            }
            curl_close($handle);
-
-           /* Handle $response here. */
-           
        }
     }
     return;
