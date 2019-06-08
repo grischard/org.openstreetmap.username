@@ -154,15 +154,12 @@ function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
                # Sometimes, field id is like custom_1
                $osmfieldid = 'custom_'.$osmfield['id'];
            } else{
-               # And the rest of the time, field id is like custom_1_1. Go figure!
-               $osmfieldid = 'custom_'.$osmfield['id'].'_'.$osmfield['custom_group_id'];
+               $customRecId = $osm = CRM_Utils_Array::value( "customRecId", $fields, FALSE );
+               # And the rest of the time, field id is like custom_1_329. Go figure!
+               $osmfieldid = 'custom_'.$osmfield['id'].'_'.$customRecId;
            }
        
        $osm = CRM_Utils_Array::value( $osmfieldid, $fields, FALSE );
-      
-       if(! $osm){
-           throw new InvalidArgumentException(sprintf("Could not find custom field in the form"));
-       }
        
        if (strlen((string)$osm) > 0) {
            $url = 'https://api.openstreetmap.org/api/0.6/changesets?time=9999-01-01&display_name='.rawurlencode($osm);
