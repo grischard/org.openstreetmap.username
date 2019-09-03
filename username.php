@@ -141,41 +141,47 @@ function username_civicrm_entityTypes(&$entityTypes) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_validateForm/
  */
 function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
-    if ( $formName == 'CRM_Contact_Form_Contact' or
-         $formName == 'CRM_Contact_Form_Inline_CustomData' or
-         $formName == 'CRM_Contribute_Form_Contribution_Main'
-        ) {
-       $osmfield = civicrm_api3('CustomField', 'getsingle', array('label' => 'OSM username'));
-       if(! $osmfield){
-           throw new InvalidArgumentException(sprintf("Could not find custom field with 'OSM username' as its label"));
-       }
+  $osmfield = civicrm_api3('CustomField', 'getsingle', array('label' => 'OSM username'));
+  switch ($formName) {
+    case 'CRM_Contribute_Form_Contribution_Main':
+      // Sometimes, field id is like custom_1
+      $fieldName = 'custom_' . $osmfield['id'];
+      break;
+      
+    case 'CRM_Contact_Form_Contact':
+    case 'CRM_Contact_Form_Inline_CustomData':
+       // And the rest of the time, field id is like custom_1_329. Go figure!
+       $customRecId = $osm = CRM_Utils_Array::value( "customRecId", $fields, FALSE );
+       $osmfieldid = 'custom_'.$osmfield['id'].'_'.$customRecId;
+      
+    default:
+      throw new InvalidArgumentException(sprintf("Could not find custom field with 'OSM username' as its label"));
+  }
        
-       if ( $formName == 'CRM_Contribute_Form_Contribution_Main') {
-               # Sometimes, field id is like custom_1
-               $osmfieldid = 'custom_'.$osmfield['id'];
-           } else{
-               $customRecId = $osm = CRM_Utils_Array::value( "customRecId", $fields, FALSE );
-               # And the rest of the time, field id is like custom_1_329. Go figure!
-               $osmfieldid = 'custom_'.$osmfield['id'].'_'.$customRecId;
-           }
-       
-       $osm = CRM_Utils_Array::value( $osmfieldid, $fields, FALSE );
-       
-       if (strlen((string)$osm) > 0) {
-           $url = 'https://api.openstreetmap.org/api/0.6/changesets?time=9999-01-01&display_name='.rawurlencode($osm);
-           $handle = curl_init($url);
-           curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+  $osm = CRM_Utils_Array::value( $osmfieldid, $fields, FALSE );
+      
+  if (!_username_validate_osm_username($osm)) {
+    $errors[$fieldname] = 'Invalid / whatever';
+  }
+}
 
-           /* Get the HTML or whatever is linked in $url. */
-           $response = curl_exec($handle);
-
-           /* Check for 404 (file not found). */
-           $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-           if($httpCode == 404) {
-               $errors[$osmfieldid] = ts( 'OSM username does not exist. Remember that usernames are case sensitive.' );
-           }
-           curl_close($handle);
-       }
+function _username_validate_osm_username($username) {
+  if (strlen((string)$osm) > 0) {
+    $url = 'https://api.openstreetmap.org/api/0.6/changesets?time=9999-01-01&display_name='.rawurlencode($osm);
+    $handle = curl_init($url);
+    curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+    /* Get the HTML or whatever is linked in $url. */
+    $response = curl_exec($handle);
+    /* Check for 404 (file not found). */
+    $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+    // This doesn't handle 50x, 30x, 403.
+    //
+    // If you want to pass back a reason why this lookup failed, consider more descriptive return values
+    // than true/false, or throwing and catching an exception?
+    if ($httpCode == 404) {
+       return false;
     }
-    return;
+    curl_close($handle);
+    return true;
+  }  
 }
