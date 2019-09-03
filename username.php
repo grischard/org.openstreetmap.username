@@ -142,22 +142,22 @@ function username_civicrm_entityTypes(&$entityTypes) {
  */
 function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
   $osmfield = civicrm_api3('CustomField', 'getsingle', array('label' => 'OSM username'));
-  switch ($formName) {
-    case 'CRM_Contribute_Form_Contribution_Main':
-      // Sometimes, field id is like custom_1
-      $fieldName = 'custom_' . $osmfield['id'];
-      break;
-      
-    case 'CRM_Contact_Form_Contact':
-    case 'CRM_Contact_Form_Inline_CustomData':
-       // And the rest of the time, field id is like custom_1_329. Go figure!
-       $customRecId = $osm = CRM_Utils_Array::value( "customRecId", $fields, FALSE );
-       $osmfieldid = 'custom_'.$osmfield['id'].'_'.$customRecId;
-      
-    default:
-      throw new InvalidArgumentException(sprintf("Could not find custom field with 'OSM username' as its label"));
-  }
-       
+	if(! $osmfield){
+	    throw new InvalidArgumentException(sprintf("Could not find custom field with 'OSM username' as its label"));
+	}
+
+    if ( $formName == 'CRM_Contact_Form_Contact' or
+         $formName == 'CRM_Contact_Form_Inline_CustomData' or
+         $formName == 'CRM_Contribute_Form_Contribution_Main'
+        ) {
+	       if ( $formName == 'CRM_Contribute_Form_Contribution_Main') {
+	           # Sometimes, field id is like custom_1
+	           $osmfieldid = 'custom_'.$osmfield['id'];
+	       } else{
+	           $customRecId = $osm = CRM_Utils_Array::value( "customRecId", $fields, FALSE );
+	           # And the rest of the time, field id is like custom_1_329. Go figure!
+	           $osmfieldid = 'custom_'.$osmfield['id'].'_'.$customRecId;
+	       }     
   $osm = CRM_Utils_Array::value( $osmfieldid, $fields, FALSE );
       
   if (!_username_validate_osm_username($osm)) {
