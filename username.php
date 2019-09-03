@@ -157,7 +157,8 @@ function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
 	           $customRecId = $osm = CRM_Utils_Array::value( "customRecId", $fields, FALSE );
 	           # And the rest of the time, field id is like custom_1_329. Go figure!
 	           $osmfieldid = 'custom_'.$osmfield['id'].'_'.$customRecId;
-	       }     
+	       }
+    }
   $osm = CRM_Utils_Array::value( $osmfieldid, $fields, FALSE );
       
   if (!_username_validate_osm_username($osm)) {
