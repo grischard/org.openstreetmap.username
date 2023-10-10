@@ -23,5 +23,9 @@
   <comments>This is a new module that has been developed for join.openstreetmap.org and not tested anywhere else.</comments>
   <civix>
     <namespace>CRM/Username</namespace>
+    <format>23.02.1</format>
   </civix>
+  <classloader>
+    <psr4 prefix="Civi\" path="Civi"/>
+  </classloader>
 </extension>
