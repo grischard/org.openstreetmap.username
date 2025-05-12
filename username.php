@@ -61,6 +61,7 @@ function username_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
            $url = 'https://api.openstreetmap.org/api/0.6/changesets?time=9999-01-01&display_name='.rawurlencode($osm);
            $handle = curl_init($url);
            curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+           curl_setopt($handle, CURLOPT_TIMEOUT, 5); // Set quick timeout to not disrupt if API unavailable.
 
            /* Get the HTML or whatever is linked in $url. */
            $response = curl_exec($handle);
